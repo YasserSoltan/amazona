@@ -1,3 +1,4 @@
+import BrowsingHistoryList from "@/components/shared/BrowsingHistoryList";
 import HomeCard from "@/components/shared/home/HomeCard";
 import HomeCarousel from "@/components/shared/home/HomeCarousel";
 import ProductSlider from "@/components/shared/product/ProductSlider";
@@ -84,6 +85,9 @@ export default async function HomePage() {
             />
           </CardContent>
         </Card>
+      </div>
+      <div className="p-4 bg-background">
+        <BrowsingHistoryList />
       </div>
     </>
   );
