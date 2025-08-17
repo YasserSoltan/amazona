@@ -42,6 +42,8 @@ import {
 } from '@/lib/constants'
 import ProductPrice from '@/components/shared/product/ProductPrice'
 import CheckoutFooter from './CheckoutFooter'
+import { toast } from 'sonner'
+import { createOrder } from '@/lib/actions/order.actions'
 
 const shippingAddressDefaultValues =
   process.env.NODE_ENV === 'development'
@@ -83,6 +85,7 @@ const CheckoutForm = () => {
     updateItem,
     removeItem,
     setDeliveryDateIndex,
+    clearCart,
   } = useCartStore()
   const isMounted = useIsMounted()
 
@@ -113,7 +116,26 @@ const CheckoutForm = () => {
     useState<boolean>(false)
 
   const handlePlaceOrder = async () => {
-    // TODO: place order
+    const res = await createOrder({
+      items,
+      shippingAddress,
+      expectedDeliveryDate: calculateFutureDate(
+        AVAILABLE_DELIVERY_DATES[deliveryDateIndex!].daysToDeliver
+      ),
+      deliveryDateIndex,
+      paymentMethod,
+      itemsPrice,
+      shippingPrice,
+      taxPrice,
+      totalPrice,
+    })
+    if (!res.success) {
+      toast.error(res.message)
+    } else {
+      toast.error(res.message)
+      clearCart()
+      router.push(`/checkout/${res.data?.orderId}`)
+    }
   }
   const handleSelectPaymentMethod = () => {
     setIsAddressSelected(true)
@@ -218,7 +240,7 @@ const CheckoutForm = () => {
           {/* shipping address */}
           <div>
             {isAddressSelected && shippingAddress ? (
-              <div className='grid grid-cols-1 md:grid-cols-12    my-3  pb-3'>
+              <div className='grid grid-cols-1 md:grid-cols-12 my-3  pb-3'>
                 <div className='col-span-5 flex text-lg font-bold '>
                   <span className='w-8'>1 </span>
                   <span>Shipping address</span>
@@ -582,7 +604,6 @@ const CheckoutForm = () => {
                       <div>
                         <div className=' font-bold'>
                           <p className='mb-2'> Choose a shipping speed:</p>
-
                           <ul>
                             <RadioGroup
                               value={
@@ -604,7 +625,7 @@ const CheckoutForm = () => {
                                     id={`address-${dd.name}`}
                                   />
                                   <Label
-                                    className='pl-2 space-y-2 cursor-pointer'
+                                    className='pl-2  cursor-pointer flex flex-col items-start'
                                     htmlFor={`address-${dd.name}`}
                                   >
                                     <div className='text-green-700 font-semibold'>
