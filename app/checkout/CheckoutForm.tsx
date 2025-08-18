@@ -132,7 +132,7 @@ const CheckoutForm = () => {
     if (!res.success) {
       toast.error(res.message)
     } else {
-      toast.error(res.message)
+      toast.success(res.message)
       clearCart()
       router.push(`/checkout/${res.data?.orderId}`)
     }
