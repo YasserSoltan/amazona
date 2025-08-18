@@ -18,14 +18,19 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import ProductPrice from "@/components/shared/product/ProductPrice";
 import CheckoutFooter from "../CheckoutFooter";
+import { loadStripe } from "@stripe/stripe-js";
+import { Elements } from "@stripe/react-stripe-js";
+import StripeForm from "./StripeForm";
 
 export default function OrderPaymentForm({
   order,
   paypalClientId,
+  clientSecret,
 }: {
   order: IOrder;
   paypalClientId: string;
   isAdmin: boolean;
+  clientSecret: string | null;
 }) {
   const router = useRouter();
   const {
@@ -122,6 +127,20 @@ export default function OrderPaymentForm({
               </div>
             )}
 
+            {!isPaid && paymentMethod === 'Stripe' && clientSecret && (
+              <Elements
+                options={{
+                  clientSecret,
+                }}
+                stripe={stripePromise}
+              >
+                <StripeForm
+                  priceInCents={Math.round(order.totalPrice * 100)}
+                  orderId={order._id}
+                />
+              </Elements>
+            )}
+
             {!isPaid && paymentMethod === "Cash On Delivery" && (
               <Button
                 className="w-full rounded-full"
@@ -134,6 +153,10 @@ export default function OrderPaymentForm({
         </div>
       </CardContent>
     </Card>
+  );
+
+  const stripePromise = loadStripe(
+    process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY as string
   );
 
   return (
