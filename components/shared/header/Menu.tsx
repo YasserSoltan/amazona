@@ -11,13 +11,13 @@ import UserButton from "./UserButton";
 import { EllipsisVertical } from "lucide-react";
 import ThemeSwitcher from "./ThemeSwitcher";
 
-const Menu = () => {
+const Menu = ({ forAdmin = false }: { forAdmin?: boolean }) => {
   return (
     <div className="flex justify-end">
       <nav className='md:flex gap-3 hidden w-full'>
         <ThemeSwitcher />
         <UserButton />
-        <CartButton />
+        {forAdmin ? null : <CartButton />}
       </nav>
 
       <nav className="md:hidden">
@@ -34,7 +34,7 @@ const Menu = () => {
             </SheetHeader>
             <ThemeSwitcher />
             <UserButton />
-            <CartButton />
+            {forAdmin ? null : <CartButton />}
           </SheetContent>
         </Sheet>
       </nav>

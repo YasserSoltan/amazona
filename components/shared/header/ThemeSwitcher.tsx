@@ -48,7 +48,7 @@ export default function ThemeSwitcher() {
             <Sun className='h-4 w-4 mr-1' /> Light
           </DropdownMenuRadioItem>
         </DropdownMenuRadioGroup>
-        <DropdownMenuSeparator />
+        {/* <DropdownMenuSeparator />
         <DropdownMenuLabel>Color</DropdownMenuLabel>
 
         <DropdownMenuRadioGroup
@@ -65,7 +65,7 @@ export default function ThemeSwitcher() {
               {c.name}
             </DropdownMenuRadioItem>
           ))}
-        </DropdownMenuRadioGroup>
+        </DropdownMenuRadioGroup> */}
       </DropdownMenuContent>
     </DropdownMenu>
   )
