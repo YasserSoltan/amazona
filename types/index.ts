@@ -9,13 +9,17 @@ import {
   UserNameSchema,
   UserSignInSchema,
   UserSignUpSchema,
+  WebPageInputSchema,
 } from "@/lib/validator";
 import z from "zod";
 
 export type IProductInput = z.infer<typeof ProductInputSchema>;
+// webpage
+export type IWebPageInput = z.infer<typeof WebPageInputSchema>
 export type Data = {
   users: IUserInput[];
   products: IProductInput[];
+  webPages: IWebPageInput[];
   reviews: {
     title: string;
     rating: number;
