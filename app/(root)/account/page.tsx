@@ -13,7 +13,7 @@ export default function AccountPage() {
   return (
     <div>
       <h1 className='h1-bold py-4'>{PAGE_TITLE}</h1>
-      <div className='grid md:grid-cols-3 gap-4 items-stretch'>
+      <div className='grid md:grid-cols-2 gap-4 items-stretch'>
         <Card>
           <Link href='/account/orders'>
             <CardContent className='flex items-start gap-4 p-6'>
@@ -46,7 +46,7 @@ export default function AccountPage() {
           </Link>
         </Card>
 
-        <Card>
+        {/* <Card>
           <Link href='/account/addresses'>
             <CardContent className='flex items-start gap-4 p-6'>
               <div>
@@ -60,7 +60,7 @@ export default function AccountPage() {
               </div>
             </CardContent>
           </Link>
-        </Card>
+        </Card> */}
       </div>
       <BrowsingHistoryList className='mt-16' />
     </div>
