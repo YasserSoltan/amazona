@@ -11,12 +11,12 @@ export default function SelectVariant({
   color: string
   size: string
 }) {
-  const selectedColor = color || product.colors[0]
-  const selectedSize = size || product.sizes[0]
+  const selectedColor = color || product.colors?.[0] || ""
+  const selectedSize = size || product.sizes?.[0] || ""
 
   return (
     <>
-      {product.colors.length > 0 && (
+      {product.colors && product.colors.length > 0 && (
         <div className='space-x-2 space-y-2'>
           <div>Color:</div>
           {product.colors.map((x: string) => (
@@ -47,7 +47,7 @@ export default function SelectVariant({
           ))}
         </div>
       )}
-      {product.sizes.length > 0 && (
+      {product.sizes && product.sizes.length > 0 && (
         <div className='mt-2 space-x-2 space-y-2'>
           <div>Size:</div>
           {product.sizes.map((x: string) => (

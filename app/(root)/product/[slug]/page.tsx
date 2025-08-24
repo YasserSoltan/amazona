@@ -5,7 +5,6 @@ import {
 } from "@/lib/actions/product.actions";
 
 import { Separator } from "@/components/ui/separator";
-import Rating from "@/components/shared/product/Rating";
 import ProductGallery from "@/components/shared/product/ProductGallery";
 import ProductPrice from "@/components/shared/product/ProductPrice";
 import SelectVariant from "@/components/shared/product/SelectVariant";
@@ -80,7 +79,7 @@ export default async function ProductDetails(props: {
                   <ProductPrice
                     price={product.price}
                     listPrice={product.listPrice}
-                    isDeal={product.tags.includes("todays-deal")}
+                    isDeal={product.tags?.includes("todays-deal") || false}
                     forListing={false}
                   />
                 </div>
@@ -89,8 +88,8 @@ export default async function ProductDetails(props: {
             <div>
               <SelectVariant
                 product={product}
-                size={size || product.sizes[0]}
-                color={color || product.colors[0]}
+                size={size || product.sizes?.[0] || ""}
+                color={color || product.colors?.[0] || ""}
               />
             </div>
             <Separator className="my-2" />
@@ -129,8 +128,8 @@ export default async function ProductDetails(props: {
                         price: round2(product.price),
                         quantity: 1,
                         image: product.images[0],
-                        size: size || product.sizes[0],
-                        color: color || product.colors[0],
+                        size: size || product.sizes?.[0] || "",
+                        color: color || product.colors?.[0] || "",
                       }}
                     />
                   </div>
