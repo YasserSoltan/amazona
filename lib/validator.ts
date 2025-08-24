@@ -152,6 +152,17 @@ export const UserSignUpSchema = UserSignInSchema.extend({
   path: ["confirmPassword"],
 });
 
+export const UserUpdateSchema = z.object({
+  _id: MongoId,
+  name: UserName,
+  email: Email,
+  role: UserRole,
+})
+
+export const UserNameSchema = z.object({
+  name: UserName,
+});
+
 // Order
 export const OrderInputSchema = z.object({
   user: z.union([
@@ -190,6 +201,4 @@ export const OrderInputSchema = z.object({
   paidAt: z.date().optional(),
 });
 
-export const UserNameSchema = z.object({
-  name: UserName,
-});
+
