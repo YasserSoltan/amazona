@@ -69,7 +69,7 @@ const ProductCard = ({
       </div>
 
       <ProductPrice
-        isDeal={product.tags.includes("todays-deal")}
+        isDeal={product.tags?.includes("todays-deal") || false}
         price={product.price}
         listPrice={product.listPrice}
         forListing
@@ -84,8 +84,8 @@ const ProductCard = ({
         item={{
           clientId: generateId(),
           product: product._id,
-          size: product.sizes[0],
-          color: product.colors[0],
+          size:product.sizes?.[0] || "",
+          color:product.colors?.[0] || "",
           countInStock: product.countInStock,
           name: product.name,
           slug: product.slug,
