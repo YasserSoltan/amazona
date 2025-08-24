@@ -5,6 +5,9 @@ import Product, { IProduct } from "@/lib/db/models/product.model";
 import { PAGE_SIZE } from "../constants";
 import { revalidatePath } from "next/cache";
 import { formatError } from "../utils";
+import { ProductInputSchema, ProductUpdateSchema } from "../validator";
+import { IProductInput } from "@/types";
+import z from "zod";
 
 export async function getAllCategories() {
   await connectToDatabase();
@@ -205,20 +208,19 @@ export async function getAllTags() {
   );
 }
 
-
 // DELETE
 export async function deleteProduct(id: string) {
   try {
-    await connectToDatabase()
-    const res = await Product.findByIdAndDelete(id)
-    if (!res) throw new Error('Product not found')
-    revalidatePath('/admin/products')
+    await connectToDatabase();
+    const res = await Product.findByIdAndDelete(id);
+    if (!res) throw new Error("Product not found");
+    revalidatePath("/admin/products");
     return {
       success: true,
-      message: 'Product deleted successfully',
-    }
+      message: "Product deleted successfully",
+    };
   } catch (error) {
-    return { success: false, message: formatError(error) }
+    return { success: false, message: formatError(error) };
   }
 }
 
@@ -226,53 +228,91 @@ export async function deleteProduct(id: string) {
 export async function getAllProductsForAdmin({
   query,
   page = 1,
-  sort = 'latest',
+  sort = "latest",
   limit,
 }: {
-  query: string
-  page?: number
-  sort?: string
-  limit?: number
+  query: string;
+  page?: number;
+  sort?: string;
+  limit?: number;
 }) {
-  await connectToDatabase()
+  await connectToDatabase();
 
-  const pageSize = limit || PAGE_SIZE
+  const pageSize = limit || PAGE_SIZE;
   const queryFilter =
-    query && query !== 'all'
+    query && query !== "all"
       ? {
           name: {
             $regex: query,
-            $options: 'i',
+            $options: "i",
           },
         }
-      : {}
+      : {};
 
   const order: Record<string, 1 | -1> =
-    sort === 'best-selling'
+    sort === "best-selling"
       ? { numSales: -1 }
-      : sort === 'price-low-to-high'
+      : sort === "price-low-to-high"
         ? { price: 1 }
-        : sort === 'price-high-to-low'
+        : sort === "price-high-to-low"
           ? { price: -1 }
-          : sort === 'avg-customer-review'
+          : sort === "avg-customer-review"
             ? { avgRating: -1 }
-            : { _id: -1 }
+            : { _id: -1 };
   const products = await Product.find({
     ...queryFilter,
   })
     .sort(order)
     .skip(pageSize * (Number(page) - 1))
     .limit(pageSize)
-    .lean()
+    .lean();
 
   const countProducts = await Product.countDocuments({
     ...queryFilter,
-  })
+  });
   return {
     products: JSON.parse(JSON.stringify(products)) as IProduct[],
     totalPages: Math.ceil(countProducts / pageSize),
     totalProducts: countProducts,
     from: pageSize * (Number(page) - 1) + 1,
     to: pageSize * (Number(page) - 1) + products.length,
+  };
+}
+
+// CREATE
+export async function createProduct(data: IProductInput) {
+  try {
+    const product = ProductInputSchema.parse(data);
+    await connectToDatabase();
+    await Product.create(product);
+    revalidatePath("/admin/products");
+    return {
+      success: true,
+      message: "Product created successfully",
+    };
+  } catch (error) {
+    return { success: false, message: formatError(error) };
   }
+}
+
+// UPDATE
+export async function updateProduct(data: z.infer<typeof ProductUpdateSchema>) {
+  try {
+    const product = ProductUpdateSchema.parse(data);
+    await connectToDatabase();
+    await Product.findByIdAndUpdate(product._id, product);
+    revalidatePath("/admin/products");
+    return {
+      success: true,
+      message: "Product updated successfully",
+    };
+  } catch (error) {
+    return { success: false, message: formatError(error) };
+  }
+}
+// GET ONE PRODUCT BY ID
+export async function getProductById(productId: string) {
+  await connectToDatabase();
+  const product = await Product.findById(productId);
+  return JSON.parse(JSON.stringify(product)) as IProduct;
 }

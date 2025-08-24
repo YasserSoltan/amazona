@@ -3,7 +3,7 @@ import { formatNumberWithDecimal } from "./utils";
 
 // Common
 const Price = (field: string) =>
-  z.coerce
+  z
     .number()
     .refine(
       (value) => /^\d+(\.\d{2})?$/.test(formatNumberWithDecimal(value)),
@@ -37,29 +37,33 @@ export const ProductInputSchema = z.object({
   isPublished: z.boolean(),
   price: Price("Price"),
   listPrice: Price("List price"),
-  countInStock: z.coerce
+  countInStock: z
     .number()
     .int()
     .nonnegative("count in stock must be a non-negative number"),
-  tags: z.array(z.string()).default([]),
-  sizes: z.array(z.string()).default([]),
-  colors: z.array(z.string()).default([]),
-  avgRating: z.coerce
+  tags: z.array(z.string()).optional(),
+  sizes: z.array(z.string()).optional(),
+  colors: z.array(z.string()).optional(),
+  avgRating: z
     .number()
     .min(0, "Average rating must be at least 0")
     .max(5, "Average rating must be at most 5"),
-  numReviews: z.coerce
+  numReviews: z
     .number()
     .int()
     .nonnegative("Number of reviews must be a non-negative number"),
   ratingDistribution: z
     .array(z.object({ rating: z.number(), count: z.number() }))
     .max(5),
-  reviews: z.array(ReviewInputSchema).default([]),
-  numSales: z.coerce
+  reviews: z.array(ReviewInputSchema).optional(),
+  numSales: z
     .number()
     .int()
     .nonnegative("Number of sales must be a non-negative number"),
+});
+
+export const ProductUpdateSchema = ProductInputSchema.extend({
+  _id: z.string().optional(),
 });
 
 // Order Item
@@ -188,5 +192,4 @@ export const OrderInputSchema = z.object({
 
 export const UserNameSchema = z.object({
   name: UserName,
-})
-
+});
